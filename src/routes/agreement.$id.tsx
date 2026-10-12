@@ -4,7 +4,7 @@ import { SiteShell, StatusBadge, Proto } from "@/components/site";
 import { updateAgreement, useAgreement, uid, type Party, type Section, type ItemStatus } from "@/lib/demo-store";
 
 export const Route = createFileRoute("/agreement/$id")({
-  validateSearch: (s: Record<string, unknown>) => ({ as: (s.as === "client" ? "client" : "provider") as Party }),
+  validateSearch: (s: Record<string, unknown>) => ({ as: (s["as"] === "client" ? "client" : "provider") as Party }),
   head: () => ({
     meta: [
       { title: "Agreement review — NoTrap.co" },

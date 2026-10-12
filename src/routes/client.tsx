@@ -5,7 +5,7 @@ import { SiteShell, StatusBadge, Proto } from "@/components/site";
 import { getAgreement, updateAgreement, useAgreement, type Section } from "@/lib/demo-store";
 
 export const Route = createFileRoute("/client")({
-  validateSearch: (s: Record<string, unknown>) => ({ id: typeof s.id === "string" ? s.id : undefined }),
+  validateSearch: (s: Record<string, unknown>): { id?: string } => ({ id: typeof s["id"] === "string" ? (s["id"] as string) : undefined }),
   head: () => ({
     meta: [
       { title: "Open a request — NoTrap.co" },

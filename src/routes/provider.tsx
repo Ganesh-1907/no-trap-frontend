@@ -5,7 +5,7 @@ import { SiteShell, RequestId, StatusBadge, Proto } from "@/components/site";
 import { newRequestId, saveAgreement, updateAgreement, useAgreement, uid, type Section } from "@/lib/demo-store";
 
 export const Route = createFileRoute("/provider")({
-  validateSearch: (s: Record<string, unknown>) => ({ id: typeof s.id === "string" ? s.id : undefined }),
+  validateSearch: (s: Record<string, unknown>): { id?: string } => ({ id: typeof s["id"] === "string" ? (s["id"] as string) : undefined }),
   head: () => ({
     meta: [
       { title: "Provider setup — NoTrap.co" },
