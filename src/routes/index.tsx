@@ -1,6 +1,27 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
 import { useState } from "react";
-import { FileText, Mic, ClipboardList, Lock, User, Check, MessageSquareWarning, Send, Info } from "lucide-react";
+import { StoryCarousel } from "@/components/StoryCarousel";
+import { HowItWorks } from "@/components/HowItWorks";
+import { BrandQuoteBanner } from "@/components/BrandQuoteBanner";
+import { FinalCtaBanner } from "@/components/FinalCtaBanner";
+import { OnboardingPreview } from "@/components/OnboardingPreview";
+import { HeaderBar, MobileNav } from "@/components/site";
+import {
+  FileText,
+  Mic,
+  Lock,
+  User,
+  Check,
+  MessageSquareWarning,
+  Send,
+  Info,
+  ArrowLeftRight,
+  ShieldCheck,
+  ArrowRight,
+  Play,
+  Users,
+  Zap,
+} from "lucide-react";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -14,159 +35,192 @@ export const Route = createFileRoute("/")({
   component: Index,
 });
 
-type Role = "provider" | "client";
-type Status = "Pending approval" | "Approved" | "Changes requested" | "Saved";
-type Rec = { id: number; kind: "Documentation" | "Scope of Work" | "Voice Record"; title: string; by: Role; status: Status };
-
-const initial: Rec[] = [
-  { id: 1, kind: "Documentation", title: "Kitchen renovation — material list", by: "provider", status: "Pending approval" },
-  { id: 2, kind: "Scope of Work", title: "Phase 1: demolition & plumbing", by: "provider", status: "Approved" },
-  { id: 3, kind: "Voice Record", title: "Call notes — budget discussion", by: "client", status: "Saved" },
-];
-
-const kinds = [
-  { k: "Documentation", icon: FileText, rule: "Sent by provider · Client approves" },
-  { k: "Voice Records", icon: Mic, rule: "Saved by either party · No approval" },
-  { k: "Scope of Work", icon: ClipboardList, rule: "Sent by provider · Client approves" },
-] as const;
-
-function Proto({ children }: { children: React.ReactNode }) {
-  return <span className="inline-flex items-center gap-1 rounded-full border border-dashed border-foreground/40 px-2 py-0.5 text-[11px] font-bold uppercase tracking-wide text-muted-foreground">{children}</span>;
-}
-
-function StatusBadge({ s }: { s: Status }) {
-  const c = s === "Approved" ? "bg-success/15 text-success" : s === "Pending approval" ? "bg-warning/20 text-foreground" : s === "Changes requested" ? "bg-destructive/10 text-destructive" : "bg-muted text-muted-foreground";
-  return <span className={`rounded-full px-2.5 py-0.5 text-xs font-bold ${c}`}>{s}</span>;
-}
-
 function Index() {
-  const [role, setRole] = useState<Role>("provider");
-  const [recs, setRecs] = useState<Rec[]>(initial);
   const [note, setNote] = useState<string | null>(null);
-
-  const add = (kind: Rec["kind"]) => {
-    const isVoice = kind === "Voice Record";
-    setRecs((r) => [{ id: Date.now(), kind, title: isVoice ? "Example voice record (not recorded)" : `New ${kind.toLowerCase()} (example)`, by: role, status: isVoice ? "Saved" : "Pending approval" }, ...r]);
-  };
-  const setStatus = (id: number, status: Status) => setRecs((r) => r.map((x) => (x.id === id ? { ...x, status } : x)));
   const start = () => document.getElementById("preview")?.scrollIntoView({ behavior: "smooth" });
-  const tone = role === "provider" ? "bg-provider" : "bg-client";
 
   return (
-    <div className="min-h-screen font-sans">
-      <header className="sticky top-0 z-10 border-b border-border bg-background/90 backdrop-blur">
-        <div className="mx-auto flex max-w-6xl items-center justify-between px-4 py-3">
-          <a href="/" className="font-display text-xl font-extrabold">NoTrap<span className="text-client">.co</span></a>
-          <button onClick={() => setNote("Sign-in isn't built yet — this is a prototype.")} className="inline-flex items-center gap-2 rounded-full border border-foreground px-4 py-2 text-sm font-bold hover:bg-foreground hover:text-background">
-            <User className="h-4 w-4" aria-hidden /> Profile / Log in
-          </button>
-        </div>
-        {note && <div role="status" className="bg-warning/25 px-4 py-2 text-center text-sm">{note} <button className="ml-2 underline" onClick={() => setNote(null)}>Dismiss</button></div>}
+    <div className="min-h-dvh font-sans bg-background">
+      <header className="sticky top-0 z-20 border-b border-border/40 bg-background/95 backdrop-blur-sm">
+        <HeaderBar />
+        {note && (
+          <div role="status" className="bg-warning/25 px-4 py-2 text-center text-sm">
+            {note} <button className="ml-2 underline" onClick={() => setNote(null)}>Dismiss</button>
+          </div>
+        )}
       </header>
 
-      <main>
-        <section className="mx-auto max-w-6xl px-4 pt-14 pb-10 text-center">
-          <Proto>Prototype preview</Proto>
-          <h1 className="mx-auto mt-4 max-w-3xl font-display text-4xl font-extrabold leading-tight sm:text-6xl">One agreement. Two sides. <span className="text-provider">No</span> <span className="text-client">traps.</span></h1>
-          <p className="mx-auto mt-4 max-w-xl text-muted-foreground">Providers propose, clients approve, and both see exactly the same record.</p>
-          <button onClick={start} className="mt-8 rounded-full bg-foreground px-8 py-4 text-lg font-bold text-background shadow-lg hover:scale-105 transition">Start an agreement</button>
-        </section>
+      <main className="overflow-x-clip pb-20 sm:pb-0">
+        {/* Hero Section: occupies the full viewport height down to the bottom wave */}
+        <section className="relative min-h-[calc(100vh-62px)] lg:h-[calc(100vh-62px)] flex flex-col justify-between overflow-hidden bg-background">
+          <div className="mx-auto w-full max-w-[1580px] 2xl:max-w-[1660px] px-6 sm:px-8 lg:px-10 pt-2 sm:pt-3 lg:pt-4 pb-2 flex-1 flex flex-col justify-center">
+            <div className="flex flex-col lg:flex-row items-center justify-center gap-3 lg:gap-4 xl:gap-6 w-full">
+              {/* Left Column: Copy & Actions */}
+              <div className="w-full lg:w-[48%] xl:w-[47%] shrink-0 flex flex-col items-start z-10">
+                {/* Mint Pill Badge */}
+                <div className="inline-flex items-center gap-2.5 rounded-full border border-[#BCECD6] bg-[#D8F5E9] px-4 py-2 shadow-2xs">
+                  <ShieldCheck className="h-4.5 w-4.5 text-[#0B7C62] shrink-0" />
+                  <span className="text-xs sm:text-[13px] font-black tracking-wider text-[#0B7C62] uppercase">
+                    CLEAR AGREEMENTS. NO SCOPE CREEP.
+                  </span>
+                </div>
 
-        <section aria-label="How it works" className="mx-auto grid max-w-6xl gap-4 px-4 pb-16 md:grid-cols-[1fr_1.4fr_1fr] md:items-stretch">
-          <div className="rounded-2xl bg-provider p-6 text-background">
-            <p className="text-xs font-bold uppercase tracking-widest opacity-80">Left side</p>
-            <h2 className="font-display text-2xl font-extrabold">Service Provider</h2>
-            <ul className="mt-4 space-y-2 text-sm"><li>→ Send Documentation for approval</li><li>→ Send Scope of Work for approval</li><li>→ Save Voice Records</li></ul>
-          </div>
-          <div className="grid gap-3">
-            {kinds.map(({ k, icon: I, rule }) => (
-              <div key={k} className="flex items-center gap-3 rounded-2xl border border-border bg-card p-4">
-                <I className="h-6 w-6 shrink-0" aria-hidden />
-                <div className="min-w-0"><p className="font-bold">{k}</p><p className="text-xs text-muted-foreground">{rule}</p></div>
+                {/* Main Headline */}
+                <h1 className="mt-4 sm:mt-5 lg:mt-6 font-display font-black text-5xl sm:text-6xl lg:text-[60px] xl:text-[72px] 2xl:text-[80px] leading-[1.05] tracking-tight text-[#0D1527]">
+                  Turn Ideas into<br />
+                  Agreements.<br />
+                  <span className="text-[#F1592A]">Not Disputes.</span>
+                </h1>
+
+                {/* Subtitle */}
+                <p className="mt-4 sm:mt-5 text-[#596780] text-base sm:text-lg lg:text-[20px] xl:text-[22px] leading-relaxed max-w-xl font-medium">
+                  NoTrap helps freelancers, agencies, and clients agree on the work upfront, track every change, and keep projects on time and on budget.
+                </p>
+
+                {/* Call to Actions */}
+                <div className="mt-6 sm:mt-7 lg:mt-8 flex flex-wrap sm:flex-nowrap items-center gap-3.5 sm:gap-4">
+                  <button
+                    onClick={start}
+                    className="inline-flex items-center justify-center gap-2.5 sm:gap-3 rounded-full bg-foreground px-7 sm:px-8 py-3.5 sm:py-4 text-base sm:text-lg font-bold text-white shadow-md hover:bg-[#182638] hover:scale-[1.02] active:scale-[0.98] transition cursor-pointer shrink-0"
+                  >
+                    <span>Start an agreement</span>
+                    <ArrowRight className="h-5 w-5 stroke-[2.5]" />
+                  </button>
+                  <button
+                    onClick={start}
+                    className="inline-flex items-center justify-center gap-2.5 sm:gap-3 rounded-full border border-[#CFD6DE] bg-white/80 hover:bg-white px-6 sm:px-7 py-3.5 sm:py-4 text-base sm:text-lg font-bold text-[#0D1527] transition cursor-pointer shadow-2xs shrink-0"
+                  >
+                    <span className="flex h-5.5 w-5.5 items-center justify-center rounded-full bg-foreground text-white shrink-0">
+                      <Play className="h-2.5 w-2.5 sm:h-3 sm:w-3 fill-current ml-0.5" />
+                    </span>
+                    <span>Watch how it works</span>
+                  </button>
+                </div>
+
+                {/* 3 Value Propositions with Dividers */}
+                <div className="mt-8 sm:mt-9 lg:mt-10 flex flex-wrap sm:flex-nowrap items-center gap-4 sm:gap-5 xl:gap-6 w-full">
+                  <div className="flex items-center gap-3 shrink-0">
+                    <div className="flex h-11 w-11 sm:h-12 sm:w-12 shrink-0 items-center justify-center rounded-full bg-[#D8F5E9] text-[#0B7C62]">
+                      <Zap className="h-5.5 w-5.5 stroke-[2.2] fill-[#0B7C62]" />
+                    </div>
+                    <span className="text-xs sm:text-[14px] xl:text-[15px] font-bold text-[#2C3B4E] leading-snug">
+                      Clear scope<br />from day one
+                    </span>
+                  </div>
+
+                  <div className="hidden sm:block h-7 w-px bg-[#D6DFD9] shrink-0" />
+
+                  <div className="flex items-center gap-3 shrink-0">
+                    <div className="flex h-11 w-11 sm:h-12 sm:w-12 shrink-0 items-center justify-center rounded-full bg-[#D8F5E9] text-[#0B7C62]">
+                      <ArrowLeftRight className="h-5.5 w-5.5 stroke-[2]" />
+                    </div>
+                    <span className="text-xs sm:text-[14px] xl:text-[15px] font-bold text-[#2C3B4E] leading-snug">
+                      Track &amp; approve<br />all changes
+                    </span>
+                  </div>
+
+                  <div className="hidden sm:block h-7 w-px bg-[#D6DFD9] shrink-0" />
+
+                  <div className="flex items-center gap-3 shrink-0">
+                    <div className="flex h-11 w-11 sm:h-12 sm:w-12 shrink-0 items-center justify-center rounded-full bg-[#D8F5E9] text-[#0B7C62]">
+                      <Users className="h-5.5 w-5.5 stroke-[2]" />
+                    </div>
+                    <span className="text-xs sm:text-[14px] xl:text-[15px] font-bold text-[#2C3B4E] leading-snug">
+                      Better client<br />relationships
+                    </span>
+                  </div>
+                </div>
               </div>
-            ))}
-            <p className="text-center text-xs text-muted-foreground">Shared records — both sides see the same items</p>
-          </div>
-          <div className="rounded-2xl bg-client p-6 text-foreground">
-            <p className="text-xs font-bold uppercase tracking-widest opacity-70">Right side</p>
-            <h2 className="font-display text-2xl font-extrabold">Client</h2>
-            <ul className="mt-4 space-y-2 text-sm"><li>← Approve or request changes to Documentation</li><li>← Approve or request changes to Scope of Work</li><li>← Save Voice Records</li></ul>
-          </div>
-        </section>
 
-        <section id="preview" className="border-y border-border bg-muted/60 py-16">
-          <div className="mx-auto max-w-4xl px-4">
-            <div className="flex flex-wrap items-center gap-3"><h2 className="font-display text-3xl font-extrabold">Try it: onboarding preview</h2><Proto>Demo data · resets on reload</Proto></div>
-            <p className="mt-2 text-sm text-muted-foreground">Choose a side to explore its actions. Nothing is saved, sent, or recorded.</p>
-
-            <div role="radiogroup" aria-label="Choose your role" className="mt-6 grid grid-cols-2 gap-2 rounded-full bg-card p-1.5 border border-border">
-              {(["provider", "client"] as Role[]).map((r) => (
-                <button key={r} role="radio" aria-checked={role === r} onClick={() => setRole(r)}
-                  className={`rounded-full py-3 font-bold transition ${role === r ? (r === "provider" ? "bg-provider text-background" : "bg-client text-foreground") : "text-muted-foreground hover:bg-muted"}`}>
-                  {r === "provider" ? "Service Provider" : "Client"}
-                </button>
-              ))}
+              {/* Right Column: Workflow Illustration */}
+              <div className="w-full lg:w-[52%] xl:w-[53%] flex items-center justify-center lg:justify-start z-10 mt-6 lg:mt-0 lg:-ml-4 xl:-ml-6">
+                <div className="relative w-full max-w-[880px] xl:max-w-[980px] 2xl:max-w-[1060px]">
+                  <img
+                    src="/hero-workflow.png"
+                    alt="NoTrap agreement workflow connecting service provider, project agreement, and client"
+                    className="w-full h-auto object-contain block select-none pointer-events-none drop-shadow-xs"
+                    loading="eager"
+                  />
+                </div>
+              </div>
             </div>
+          </div>
 
-            <div className="mt-6 rounded-2xl border border-border bg-card p-5">
-              <div className="flex flex-wrap items-center justify-between gap-2">
-                <h3 className="font-bold">Agreement: Kitchen renovation</h3>
-                <span className="text-xs text-muted-foreground">Viewing as <b>{role === "provider" ? "Service Provider" : "Client"}</b></span>
-              </div>
-              <div className="mt-4 flex flex-wrap gap-2">
-                {role === "provider" && <>
-                  <button onClick={() => add("Documentation")} className={`inline-flex items-center gap-2 rounded-lg ${tone} px-4 py-2 text-sm font-bold text-background`}><Send className="h-4 w-4" aria-hidden />Send Documentation</button>
-                  <button onClick={() => add("Scope of Work")} className={`inline-flex items-center gap-2 rounded-lg ${tone} px-4 py-2 text-sm font-bold text-background`}><Send className="h-4 w-4" aria-hidden />Send Scope of Work</button>
-                </>}
-                <button onClick={() => add("Voice Record")} className="inline-flex items-center gap-2 rounded-lg border border-foreground px-4 py-2 text-sm font-bold"><Mic className="h-4 w-4" aria-hidden />Save Voice Record <span className="text-xs font-normal">(simulated)</span></button>
-              </div>
-              {role === "client" && <p className="mt-3 flex items-center gap-2 text-xs text-muted-foreground"><Info className="h-4 w-4" aria-hidden />Only the provider can submit Documentation and Scope of Work. You approve or request changes.</p>}
-
-              <ul className="mt-5 divide-y divide-border">
-                {recs.map((r) => {
-                  const canReview = role === "client" && r.kind !== "Voice Record" && r.status === "Pending approval";
-                  return (
-                    <li key={r.id} className="flex flex-col gap-2 py-3 sm:flex-row sm:items-center sm:justify-between">
-                      <div className="min-w-0">
-                        <p className="text-xs font-bold uppercase tracking-wide text-muted-foreground">{r.kind}</p>
-                        <p className="truncate font-medium">{r.title}</p>
-                        <span className={`mt-1 inline-block rounded px-1.5 text-[11px] font-bold ${r.by === "provider" ? "bg-provider-soft text-provider" : "bg-client-soft text-foreground"}`}>Added by {r.by === "provider" ? "Service Provider" : "Client"}</span>
-                      </div>
-                      <div className="flex shrink-0 flex-wrap items-center gap-2">
-                        <StatusBadge s={r.status} />
-                        {canReview && <>
-                          <button onClick={() => setStatus(r.id, "Approved")} className="inline-flex items-center gap-1 rounded-lg bg-success px-3 py-1 text-xs font-bold text-background"><Check className="h-3 w-3" aria-hidden />Approve</button>
-                          <button onClick={() => setStatus(r.id, "Changes requested")} className="inline-flex items-center gap-1 rounded-lg border border-destructive px-3 py-1 text-xs font-bold text-destructive"><MessageSquareWarning className="h-3 w-3" aria-hidden />Request changes</button>
-                        </>}
-                      </div>
-                    </li>
-                  );
-                })}
-              </ul>
-            </div>
+          {/* Organic Bottom Wave - naturally framing the hero */}
+          <div className="w-full shrink-0 overflow-hidden leading-none pointer-events-none -mb-1 -mt-8 sm:-mt-12 lg:-mt-16 xl:-mt-20 z-0">
+            <svg
+              className="w-full h-24 sm:h-28 lg:h-36 xl:h-44 text-[#DFECE3]"
+              viewBox="0 0 1440 140"
+              preserveAspectRatio="none"
+            >
+              {/* Layer 1: Warm Sand Wave */}
+              <path
+                d="M 0 40 C 240 75, 420 95, 640 80 C 880 65, 1120 25, 1440 45 L 1440 140 L 0 140 Z"
+                fill="#F8EFE4"
+              />
+              {/* Layer 2: Pale Mint/Sage Wave */}
+              <path
+                d="M 520 140 C 660 85, 780 48, 920 48 C 1080 48, 1200 110, 1330 106 C 1370 104, 1410 88, 1440 70 L 1440 140 L 520 140 Z"
+                fill="#DFECE3"
+              />
+              <path
+                d="M 520 140 C 660 85, 780 48, 920 48 C 1080 48, 1200 110, 1330 106 C 1370 104, 1410 88, 1440 70"
+                fill="none"
+                stroke="#CFE0D5"
+                strokeWidth="1.5"
+                vectorEffect="non-scaling-stroke"
+              />
+            </svg>
           </div>
         </section>
 
-        <section className="mx-auto max-w-3xl px-4 py-16">
-          <div className="flex items-start gap-4 rounded-2xl border border-border bg-card p-6">
-            <Lock className="mt-1 h-6 w-6 shrink-0" aria-hidden />
+        {/* Section 2: Scope-Creep Story Carousel */}
+        <StoryCarousel />
+
+        {/* Section 3: How NoTrap Works — From First Agreement to Final Delivery */}
+        <HowItWorks />
+
+        {/* Section 4: Brand Quote Banner */}
+        <BrandQuoteBanner />
+
+        {/* Section 5: Final Call-to-Action Banner */}
+        <FinalCtaBanner />
+
+        {/* Onboarding Preview Section */}
+        <OnboardingPreview />
+
+        {/* Privacy Section */}
+        <section className="mx-auto max-w-3xl px-6 py-16">
+          <div className="flex items-start gap-4 rounded-3xl border border-[#E0E6E2] bg-white p-6 sm:p-7 shadow-xs">
+            <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl bg-background text-[#0B7C62] border border-[#EAEFEA]">
+              <Lock className="h-5 w-5" aria-hidden />
+            </div>
             <div>
-              <h2 className="font-display text-2xl font-extrabold">Privacy is the point</h2>
-              <p className="mt-2 text-muted-foreground">Our goal: only the client and the service provider can access their shared records — not even NoTrap.co.</p>
-              <p className="mt-3 text-sm font-bold">Honest status: this is a front-end prototype. Encryption, accounts, storage and voice recording are <u>not yet built</u>.</p>
+              <h2 className="font-display text-2xl font-black text-[#0D1527]">Privacy is the point</h2>
+              <p className="mt-2 text-sm sm:text-base text-[#596780] leading-relaxed">
+                Our goal: only the client and the service provider can access their shared records — not even NoTrap.co.
+              </p>
+              <div className="mt-3.5 inline-flex items-center gap-1.5 rounded-lg bg-background px-3 py-1.5 text-xs font-bold text-[#69788D] border border-[#ECEEEF]">
+                <Info className="h-3.5 w-3.5 text-[#0B7C62]" />
+                <span>Honest status: accounts, agreements and files are stored on our servers. End-to-end encryption is not built yet.</span>
+              </div>
             </div>
           </div>
         </section>
       </main>
 
+      {/* Footer */}
       <footer className="border-t border-border">
         <div className="mx-auto flex max-w-6xl flex-wrap items-center justify-between gap-4 px-4 py-6 text-sm">
           <span className="font-display font-extrabold">NoTrap.co</span>
           <nav aria-label="Footer" className="flex gap-5 text-muted-foreground">
-            {["Privacy", "Terms", "Contact"].map((l) => <span key={l} aria-disabled="true">{l} <span className="text-[10px] uppercase">(placeholder)</span></span>)}
+            {["Privacy", "Terms", "Contact"].map((l) => (
+              <span key={l} aria-disabled="true">{l} <span className="text-[11px] uppercase">(placeholder)</span></span>
+            ))}
           </nav>
         </div>
       </footer>
+      <MobileNav />
     </div>
   );
 }

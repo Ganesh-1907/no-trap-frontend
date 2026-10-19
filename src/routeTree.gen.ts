@@ -14,6 +14,13 @@ import { Route as ClientRouteImport } from './routes/client'
 import { Route as ProviderRouteImport } from './routes/provider'
 import { Route as StartRouteImport } from './routes/start'
 import { Route as AgreementIdRouteImport } from './routes/agreement.$id'
+import { Route as AuthForgotPasswordRouteImport } from './routes/auth/forgot-password'
+import { Route as AuthResetPasswordRouteImport } from './routes/auth/reset-password'
+import { Route as AuthSigninRouteImport } from './routes/auth/signin'
+import { Route as AuthSignupRouteImport } from './routes/auth/signup'
+import { Route as ClientProvidersRouteImport } from './routes/client_.providers'
+import { Route as ProviderClientsRouteImport } from './routes/provider_.clients'
+import { Route as ProviderNewRouteImport } from './routes/provider_.new'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -40,6 +47,41 @@ const AgreementIdRoute = AgreementIdRouteImport.update({
   path: '/agreement/$id',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AuthForgotPasswordRoute = AuthForgotPasswordRouteImport.update({
+  id: '/auth/forgot-password',
+  path: '/auth/forgot-password',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AuthResetPasswordRoute = AuthResetPasswordRouteImport.update({
+  id: '/auth/reset-password',
+  path: '/auth/reset-password',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AuthSigninRoute = AuthSigninRouteImport.update({
+  id: '/auth/signin',
+  path: '/auth/signin',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AuthSignupRoute = AuthSignupRouteImport.update({
+  id: '/auth/signup',
+  path: '/auth/signup',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ClientProvidersRoute = ClientProvidersRouteImport.update({
+  id: '/client_/providers',
+  path: '/client/providers',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ProviderClientsRoute = ProviderClientsRouteImport.update({
+  id: '/provider_/clients',
+  path: '/provider/clients',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ProviderNewRoute = ProviderNewRouteImport.update({
+  id: '/provider_/new',
+  path: '/provider/new',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -47,6 +89,13 @@ export interface FileRoutesByFullPath {
   '/provider': typeof ProviderRoute
   '/start': typeof StartRoute
   '/agreement/$id': typeof AgreementIdRoute
+  '/auth/forgot-password': typeof AuthForgotPasswordRoute
+  '/auth/reset-password': typeof AuthResetPasswordRoute
+  '/auth/signin': typeof AuthSigninRoute
+  '/auth/signup': typeof AuthSignupRoute
+  '/client/providers': typeof ClientProvidersRoute
+  '/provider/clients': typeof ProviderClientsRoute
+  '/provider/new': typeof ProviderNewRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -54,6 +103,13 @@ export interface FileRoutesByTo {
   '/provider': typeof ProviderRoute
   '/start': typeof StartRoute
   '/agreement/$id': typeof AgreementIdRoute
+  '/auth/forgot-password': typeof AuthForgotPasswordRoute
+  '/auth/reset-password': typeof AuthResetPasswordRoute
+  '/auth/signin': typeof AuthSigninRoute
+  '/auth/signup': typeof AuthSignupRoute
+  '/client/providers': typeof ClientProvidersRoute
+  '/provider/clients': typeof ProviderClientsRoute
+  '/provider/new': typeof ProviderNewRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -62,13 +118,57 @@ export interface FileRoutesById {
   '/provider': typeof ProviderRoute
   '/start': typeof StartRoute
   '/agreement/$id': typeof AgreementIdRoute
+  '/auth/forgot-password': typeof AuthForgotPasswordRoute
+  '/auth/reset-password': typeof AuthResetPasswordRoute
+  '/auth/signin': typeof AuthSigninRoute
+  '/auth/signup': typeof AuthSignupRoute
+  '/client_/providers': typeof ClientProvidersRoute
+  '/provider_/clients': typeof ProviderClientsRoute
+  '/provider_/new': typeof ProviderNewRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/client' | '/provider' | '/start' | '/agreement/$id'
+  fullPaths:
+    | '/'
+    | '/client'
+    | '/provider'
+    | '/start'
+    | '/agreement/$id'
+    | '/auth/forgot-password'
+    | '/auth/reset-password'
+    | '/auth/signin'
+    | '/auth/signup'
+    | '/client/providers'
+    | '/provider/clients'
+    | '/provider/new'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/client' | '/provider' | '/start' | '/agreement/$id'
-  id: '__root__' | '/' | '/client' | '/provider' | '/start' | '/agreement/$id'
+  to:
+    | '/'
+    | '/client'
+    | '/provider'
+    | '/start'
+    | '/agreement/$id'
+    | '/auth/forgot-password'
+    | '/auth/reset-password'
+    | '/auth/signin'
+    | '/auth/signup'
+    | '/client/providers'
+    | '/provider/clients'
+    | '/provider/new'
+  id:
+    | '__root__'
+    | '/'
+    | '/client'
+    | '/provider'
+    | '/start'
+    | '/agreement/$id'
+    | '/auth/forgot-password'
+    | '/auth/reset-password'
+    | '/auth/signin'
+    | '/auth/signup'
+    | '/client_/providers'
+    | '/provider_/clients'
+    | '/provider_/new'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -77,6 +177,13 @@ export interface RootRouteChildren {
   ProviderRoute: typeof ProviderRoute
   StartRoute: typeof StartRoute
   AgreementIdRoute: typeof AgreementIdRoute
+  AuthForgotPasswordRoute: typeof AuthForgotPasswordRoute
+  AuthResetPasswordRoute: typeof AuthResetPasswordRoute
+  AuthSigninRoute: typeof AuthSigninRoute
+  AuthSignupRoute: typeof AuthSignupRoute
+  ClientProvidersRoute: typeof ClientProvidersRoute
+  ProviderClientsRoute: typeof ProviderClientsRoute
+  ProviderNewRoute: typeof ProviderNewRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -116,6 +223,55 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AgreementIdRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/auth/forgot-password': {
+      id: '/auth/forgot-password'
+      path: '/auth/forgot-password'
+      fullPath: '/auth/forgot-password'
+      preLoaderRoute: typeof AuthForgotPasswordRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/auth/reset-password': {
+      id: '/auth/reset-password'
+      path: '/auth/reset-password'
+      fullPath: '/auth/reset-password'
+      preLoaderRoute: typeof AuthResetPasswordRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/auth/signin': {
+      id: '/auth/signin'
+      path: '/auth/signin'
+      fullPath: '/auth/signin'
+      preLoaderRoute: typeof AuthSigninRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/auth/signup': {
+      id: '/auth/signup'
+      path: '/auth/signup'
+      fullPath: '/auth/signup'
+      preLoaderRoute: typeof AuthSignupRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/client_/providers': {
+      id: '/client_/providers'
+      path: '/client/providers'
+      fullPath: '/client/providers'
+      preLoaderRoute: typeof ClientProvidersRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/provider_/clients': {
+      id: '/provider_/clients'
+      path: '/provider/clients'
+      fullPath: '/provider/clients'
+      preLoaderRoute: typeof ProviderClientsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/provider_/new': {
+      id: '/provider_/new'
+      path: '/provider/new'
+      fullPath: '/provider/new'
+      preLoaderRoute: typeof ProviderNewRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
@@ -125,6 +281,13 @@ const rootRouteChildren: RootRouteChildren = {
   ProviderRoute: ProviderRoute,
   StartRoute: StartRoute,
   AgreementIdRoute: AgreementIdRoute,
+  AuthForgotPasswordRoute: AuthForgotPasswordRoute,
+  AuthResetPasswordRoute: AuthResetPasswordRoute,
+  AuthSigninRoute: AuthSigninRoute,
+  AuthSignupRoute: AuthSignupRoute,
+  ClientProvidersRoute: ClientProvidersRoute,
+  ProviderClientsRoute: ProviderClientsRoute,
+  ProviderNewRoute: ProviderNewRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

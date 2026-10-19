@@ -57,8 +57,8 @@
   --color-client-soft: var(--client-soft);
   --color-success: var(--success);
   --color-warning: var(--warning);
-  --font-display: "Bricolage Grotesque", sans-serif;
-  --font-sans: "Manrope", sans-serif;
+  --font-display: "Bricolage Grotesque", ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-sans: "Manrope", ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
   --color-sidebar: var(--sidebar);
   --color-sidebar-foreground: var(--sidebar-foreground);
   --color-sidebar-primary: var(--sidebar-primary);
@@ -71,7 +71,7 @@
 
 :root {
   --radius: 0.75rem;
-  --background: oklch(0.975 0.012 85);
+  --background: #FDF9EE;
   --foreground: oklch(0.22 0.03 250);
   --provider: oklch(0.52 0.11 195);
   --provider-soft: oklch(0.93 0.04 195);
@@ -149,10 +149,76 @@
 @layer base {
   * {
     border-color: var(--color-border);
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  html {
+    -webkit-text-size-adjust: 100%;
+    touch-action: manipulation;
   }
 
   body {
     background-color: var(--color-background);
     color: var(--color-foreground);
+    /* Top/bottom insets are handled by the header (.safe-top) and the bottom nav; sides cover landscape notches. */
+    padding-left: env(safe-area-inset-left);
+    padding-right: env(safe-area-inset-right);
+    min-height: 100vh;
+    min-height: 100dvh;
+    overscroll-behavior-y: none;
+    -webkit-overflow-scrolling: touch;
+  }
+}
+
+/* ───────── App / touch standards (web + Capacitor) ───────── */
+.safe-top {
+  padding-top: env(safe-area-inset-top);
+}
+
+/* Inputs under 16px make iOS zoom the page on focus. */
+@media (max-width: 640px) {
+  input,
+  select,
+  textarea {
+    font-size: 16px;
+  }
+}
+
+/* Touch targets: at least 44x44 CSS px (Apple HIG / Material). */
+@media (pointer: coarse), (max-width: 640px) {
+  button,
+  [role="tab"],
+  select,
+  input:not([type="checkbox"]):not([type="radio"]):not([type="file"]) {
+    min-height: 44px;
+  }
+  button {
+    min-width: 44px;
+  }
+  label:has(> input[type="checkbox"]),
+  label:has(> input[type="file"]) {
+    min-height: 44px;
+    display: flex;
+    align-items: center;
+  }
+  /* Links keep their look; an invisible pseudo-element grows the hit area. */
+  a {
+    position: relative;
+  }
+  a::after {
+    content: "";
+    position: absolute;
+    inset: -12px -6px;
+  }
+  /* Tiny decorative dots (carousel pagination) get a hit area without becoming big pills. */
+  button[aria-label^="Go to slide"] {
+    min-height: 0;
+    min-width: 0;
+    position: relative;
+  }
+  button[aria-label^="Go to slide"]::after {
+    content: "";
+    position: absolute;
+    inset: -17px -9px;
   }
 }
